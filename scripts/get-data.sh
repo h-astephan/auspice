@@ -84,3 +84,5 @@ do
 done
 
 echo "The local data directory ./data now contains up-to-date datasets from http://data.nextstrain.org and http://staging.nextstrain.org"
+
+curl https://nextstrain-scratch.s3.amazonaws.com/james/zika-sparse-metadata.json --compressed -o data/zika-sparse-metadata.json
