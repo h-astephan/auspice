@@ -16,11 +16,12 @@ const iconWidth = 25;
  * A React Component displaying buttons which trigger data-downloads. Intended for display within the
  * larger Download modal component
  */
-export const DownloadButtons = ({dispatch, t, tree, entropy, metadata, colorBy, mutType, panelsToDisplay, panelLayout, filters, visibility, visibleStateCounts, relevantPublications}) => {
+export const DownloadButtons = ({dispatch, t, tree, entropy, metadata, colorBy, mutType, distanceMeasure, panelsToDisplay, panelLayout, filters, visibility, visibleStateCounts, relevantPublications}) => {
   const totalTipCount = metadata.mainTreeNumTips;
   const selectedTipsCount = getNumSelectedTips(tree.nodes, tree.visibility);
   const partialData = selectedTipsCount !== totalTipCount;
   const filePrefix = getFilePrefix();
+  const temporal = distanceMeasure === "num_date";
 
   return (
     <>
@@ -31,28 +32,16 @@ export const DownloadButtons = ({dispatch, t, tree, entropy, metadata, colorBy, 
         }
       </div>
       <Button
-        name="Tree (Newick)"
-        description="Phylogenetic tree in Newick format with branch lengths in units of divergence."
+        name={`${temporal ? 'TimeTree' : 'Tree'} (Newick)`}
+        description={`Phylogenetic tree in Newick format with branch lengths in units of ${temporal?'years':'divergence'}.`}
         icon={<RectangularTreeIcon width={iconWidth} selected />}
-        onClick={() => helpers.exportTree({isNewick: true, dispatch, filePrefix, tree, temporal: false})}
+        onClick={() => helpers.exportTree({isNewick: true, dispatch, filePrefix, tree, temporal})}
       />
       <Button
-        name="TimeTree (Newick)"
-        description="Phylogenetic tree in Newick format with branch lengths measured in years."
+        name={`${temporal ? 'TimeTree' : 'Tree'} (Nexus)`}
+        description={`Phylogeny in Nexus format with branch lengths in units of ${temporal?'years':'divergence'}. Colorings are included as annotations.`}
         icon={<RectangularTreeIcon width={iconWidth} selected />}
-        onClick={() => helpers.exportTree({isNewick: true, dispatch, filePrefix, tree, temporal: true})}
-      />
-      <Button
-        name="Tree (Nexus)"
-        description="Phylogeny in Nexus format with branch lengths in units of divergence. Colorings are included as annotations."
-        icon={<RectangularTreeIcon width={iconWidth} selected />}
-        onClick={() => helpers.exportTree({dispatch, filePrefix, tree, colorings: metadata.colorings, colorBy, temporal: false})}
-      />
-      <Button
-        name="TimeTree (Nexus)"
-        description="Phylogeny in Neexus format with branch lengths measured in years. Colorings are included as annotations."
-        icon={<RectangularTreeIcon width={iconWidth} selected />}
-        onClick={() => helpers.exportTree({dispatch, filePrefix, tree, colorings: metadata.colorings, colorBy, temporal: true})}
+        onClick={() => helpers.exportTree({dispatch, filePrefix, tree, colorings: metadata.colorings, colorBy, temporal})}
       />
       <Button
         name="Metadata (TSV)"
